@@ -4,8 +4,8 @@ from typing import Union
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from app.classes import WorkShiftPersonRangeInfo
 from app.collision_checker import CollisionChecker
+from app.dataclasses import WorkShiftPersonRangeInfo
 
 
 class Data(BaseModel):

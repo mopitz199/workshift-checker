@@ -45,7 +45,9 @@ class Utils:
             return None
 
     @classmethod
-    def get_day_schedule(cls, wpr_info, date_obj) -> Tuple[(datetime, datetime, bool)]:
+    def get_day_schedule(
+        cls, wpr_info: dict, date_obj: datetime.date
+    ) -> Tuple[(datetime, datetime, bool)]:
         """Method to get the schedule of an specific date object
         from the workshift of a person"""
         day_number = cls.get_day_number_from_date(
