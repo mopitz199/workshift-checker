@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from app.collision_checker import CollisionChecker
-from app.dataclasses import WorkShiftPersonRangeInfo
+from app.data_classes import WorkShiftPersonRangeInfo
 
 
 class Data(BaseModel):
@@ -17,7 +17,7 @@ app = FastAPI()
 
 
 @app.post("/")
-def read_root(data: Data):
+def collision_checker(data: Data):
 
     workshifts = data.workshifts
     employees_info = data.employees_info
@@ -25,10 +25,8 @@ def read_root(data: Data):
     start = time.time()
     total_collisions = 0
     total_comparisions = 0
-
     total_collisions_detail = {}
 
-    # process = CollisionProcess()
     for i in range(0, 3000):
         for employee_info in employees_info:
             base_workshifts_person_range = employee_info["base_workshifts_person_range"]
@@ -77,8 +75,3 @@ def read_root(data: Data):
         "comparisions": total_comparisions,
         "total_collisions_detail": total_collisions_detail,
     }
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from app.dataclasses import CollisionsResults
+from app.data_classes import CollisionsResults
 from app.utils import Utils
 
 smart_collisions = True
