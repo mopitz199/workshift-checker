@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 
 
@@ -43,3 +43,27 @@ class Utils:
             return day_number
         else:
             return None
+
+    @classmethod
+    def get_day_schedule(cls, wpr_info, date_obj):
+        day_number = cls.get_day_number_from_date(
+            workshift_person_range=wpr_info.workshift_person_range,
+            date_obj=date_obj,
+            total_days=wpr_info.workshift_len,
+        )
+
+        if day_number:
+            day_schedule = wpr_info.workshift[str(day_number)]
+            if day_schedule:
+                start_datetime = cls.str_to_datetime(
+                    str(date_obj), day_schedule["start_time"]
+                )
+                if day_schedule["is_nightly"]:
+                    next_date = date_obj + timedelta(days=1)
+                else:
+                    next_date = date_obj
+                end_datetime = cls.str_to_datetime(
+                    str(next_date), day_schedule["end_time"]
+                )
+                return (start_datetime, end_datetime), day_schedule["is_nightly"]
+        return None, None
