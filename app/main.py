@@ -31,9 +31,7 @@ def read_root(data: Data):
     # process = CollisionProcess()
     for i in range(0, 3000):
         for employee_info in employees_info:
-            base_workshifts_person_range = employee_info[
-                "base_workshifts_person_rangecascask calks cklasmcklmasklcmaklsmcaslmclkasmcklasmkclmsamkcas"
-            ]
+            base_workshifts_person_range = employee_info["base_workshifts_person_range"]
             entrance_workshifts_person_range = employee_info[
                 "entrance_workshifts_person_range"
             ]
