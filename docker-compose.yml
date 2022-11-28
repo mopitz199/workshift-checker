@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  api-pypy:
+    build:
+      dockerfile: docker/api/Dockerfile-pypy
+      context: .
+    volumes:
+      - .:/code
+    # command: sh -c "uvicorn main:app --reload"
+    stdin_open: true 
+    tty: true
+    ports:
+      - "8000:8000"
+  api-python:
+    build:
+      dockerfile: docker/api/Dockerfile-python
+      context: .
+    volumes:
+      - .:/code
+    # command: sh -c "uvicorn main:app --reload"
+    stdin_open: true 
+    tty: true
+    ports:
+      - "8001:8001"

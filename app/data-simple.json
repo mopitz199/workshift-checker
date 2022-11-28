@@ -1,0 +1,92 @@
+{
+    "workshifts": {
+        "1" : {
+            "1" : {
+                "start_time": "22:30",
+                "end_time": "09:30",
+                "is_nightly": true
+            },
+            "2" : {
+                "start_time": "22:30",
+                "end_time": "09:30",
+                "is_nightly": true
+            },
+            "3" : {
+                "start_time": "22:30",
+                "end_time": "09:30",
+                "is_nightly": true
+            },
+            "4": {
+                "start_time": "22:30",
+                "end_time": "09:30",
+                "is_nightly": true
+            },
+            "5" : {
+                "start_time": "22:30",
+                "end_time": "09:30",
+                "is_nightly": true
+            },
+            "6": {
+                "start_time": "22:30",
+                "end_time": "09:30",
+                "is_nightly": true
+            }
+        },
+        "3": {
+            "1": {
+                "start_time": "08:30",
+                "end_time": "18:30",
+                "is_nightly": false
+            },
+            "2": {
+                "start_time": "08:30",
+                "end_time": "18:30",
+                "is_nightly": false
+            },
+            "3": {
+                "start_time": "08:30",
+                "end_time": "18:30",
+                "is_nightly": false
+            },
+            "4": {
+                "start_time": "08:30",
+                "end_time": "18:30",
+                "is_nightly": false
+            },
+            "5": {
+                "start_time": "08:30",
+                "end_time": "18:30",
+                "is_nightly": false
+            },
+            "6": {
+                "start_time": "08:30",
+                "end_time": "18:30",
+                "is_nightly": false
+            }
+        }
+    },
+    "employees_info": [
+        {
+            "person": 1,
+            "base_workshifts_person_range": [
+                {
+                    "id": 1,
+                    "uuid": "j324jdn54tk",
+                    "workshift": 1,
+                    "starting_day": 1,
+                    "start_date": "2022-01-01",
+                    "end_date": "2022-01-10"
+                }
+            ],
+            "entrance_workshifts_person_range": [
+                {
+                    "uuid": "n3k4j5n34jk",
+                    "workshift": 3,
+                    "starting_day": 1,
+                    "start_date": "2022-01-01",
+                    "end_date": "2022-01-10"
+                }
+            ]
+        }
+    ]
+}
