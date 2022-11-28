@@ -57,6 +57,7 @@ def collision_checker(data: Data):
                     checker = CollisionChecker(
                         base_workshift_person_range_info=base_workshift_person_range_info,
                         entrance_workshift_person_range_info=entrance_workshift_person_range_info,
+                        detail_level="full",
                     )
                     collisions_result = checker.get_collisions()
 

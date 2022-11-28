@@ -8,8 +8,12 @@ smart_collisions = True
 
 class CollisionChecker:
     def __init__(
-        self, base_workshift_person_range_info, entrance_workshift_person_range_info
+        self,
+        base_workshift_person_range_info,
+        entrance_workshift_person_range_info,
+        detail_level,
     ) -> None:
+        self.detail_level = detail_level
         self.all_traversed = False
 
         self.base_wpr_info = base_workshift_person_range_info
@@ -79,7 +83,16 @@ class CollisionChecker:
 
             if Utils.has_collision(prev_base_schedule, self.current_entrance_schedule):
                 self.collisions_results.add_collision()
-                aux_collision_detail["prev"] = aux_base_day_number
+
+                self.collisions_results.append_collision_schedule(
+                    self.current_entrance_schedule,
+                    prev_base_schedule,
+                )
+
+                self.collisions_results.update_collisions_detail(
+                    aux_entrance_day_number, aux_base_day_number, "prev"
+                )
+
         return aux_collision_detail
 
     def check_current_schedule(self):
@@ -107,7 +120,15 @@ class CollisionChecker:
                 current_base_schedule, self.current_entrance_schedule
             ):
                 self.collisions_results.add_collision()
-                aux_collision_detail["current"] = aux_base_day_number
+
+                self.collisions_results.append_collision_schedule(
+                    self.current_entrance_schedule,
+                    current_base_schedule,
+                )
+
+                self.collisions_results.update_collisions_detail(
+                    aux_entrance_day_number, aux_base_day_number, "current"
+                )
             return aux_collision_detail
 
     def check_next_schedule(self):
@@ -124,12 +145,27 @@ class CollisionChecker:
                 self.current_entrance_schedule,
             ):
                 self.collisions_results.add_collision()
+
                 aux_base_day_number = Utils.get_day_number_from_date(
                     self.base_wpr_info.workshift_person_range,
                     next_aux_date,
                     self.base_wpr_info.workshift_len,
                 )
-                aux_collision_detail["next"] = aux_base_day_number
+                aux_entrance_day_number = Utils.get_day_number_from_date(
+                    self.entrance_wpr_info.workshift_person_range,
+                    self.aux_date,
+                    self.entrance_wpr_info.workshift_len,
+                )
+
+                self.collisions_results.append_collision_schedule(
+                    self.current_entrance_schedule,
+                    next_base_schedule,
+                )
+
+                self.collisions_results.update_collisions_detail(
+                    aux_entrance_day_number, aux_base_day_number, "next"
+                )
+
         return aux_collision_detail
 
     def update_collisions_detail(self, collision_detail):
@@ -159,18 +195,13 @@ class CollisionChecker:
             if self.current_entrance_schedule:
 
                 # Check prev
-                aux_collision_detail = self.check_prev_schedule()
-                collision_detail.update(aux_collision_detail)
+                self.check_prev_schedule()
 
                 # Check current
-                aux_collision_detail = self.check_current_schedule()
-                collision_detail.update(aux_collision_detail)
+                self.check_current_schedule()
 
                 # Check next
-                aux_collision_detail = self.check_next_schedule()
-                collision_detail.update(aux_collision_detail)
-
-                self.update_collisions_detail(collision_detail)
+                self.check_next_schedule()
 
                 if self.all_traversed and smart_collisions:
                     return self.collisions_results
