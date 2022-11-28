@@ -1,13 +1,16 @@
 from datetime import datetime
+from typing import Optional
 
 
 class Utils:
     @classmethod
-    def str_to_date(cls, string):
+    def str_to_date(cls, string) -> datetime:
+        """Method to transform an string to a datetime object"""
         return datetime.strptime(string, "%Y-%m-%d").date()
 
     @classmethod
-    def str_to_datetime(cls, date_str, time_str):
+    def str_to_datetime(cls, date_str, time_str) -> datetime:
+        """Method to transform an string to a datetime object"""
         datetime_str = f"{date_str} {time_str}"
         return datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
 
@@ -16,14 +19,14 @@ class Utils:
         cls,
         schedule1,
         schedule2,
-    ):
+    ) -> bool:
         """Method to get if two schedule, has collisions"""
         return schedule1[1] >= schedule2[0] and schedule1[0] <= schedule2[1]
 
     @classmethod
     def get_day_number_from_date(
         cls, workshift_person_range, date_obj, total_days
-    ) -> int:
+    ) -> Optional[int]:
         """Method to get the number of the day in thw workshift from the date object"""
 
         starting_day = workshift_person_range["starting_day"]
