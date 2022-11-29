@@ -69,5 +69,9 @@ class Utils:
                 end_datetime = cls.str_to_datetime(
                     str(next_date), day_schedule["end_time"]
                 )
-                return (start_datetime, end_datetime), day_schedule["is_nightly"]
-        return None, None
+                return (
+                    (start_datetime, end_datetime),
+                    day_schedule["is_nightly"],
+                    day_number,
+                )
+        return None, None, day_number

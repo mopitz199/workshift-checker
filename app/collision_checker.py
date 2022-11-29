@@ -20,6 +20,9 @@ class CollisionChecker:
         self.entrance_wpr_info = entrance_workshift_person_range_info
         self.collisions_results = CollisionsResults()
 
+        self.aux_entrance_day_number = None
+        self.aux_entrance_day_number_date = None
+
         self.current_entrance_schedule = None
         self.current_entrance_schedule_is_nightly = None
         self.aux_date = None
@@ -56,27 +59,32 @@ class CollisionChecker:
                 aux_base_day_number == self.base_wpr_info.initial_day_number
                 and self.entrance_wpr_info.initial_day_number == aux_entrance_day_number
             ):
-                # Traverse all
                 self.all_traversed = True
 
-    def check_prev_schedule(self):
-        aux_collision_detail = {}
-        prev_aux_date = self.aux_date - timedelta(days=1)
-        prev_base_schedule, prev_base_schedule_is_nightly = Utils.get_day_schedule(
-            self.base_wpr_info, prev_aux_date
-        )
-
-        if prev_base_schedule and prev_base_schedule_is_nightly:
-            aux_base_day_number = Utils.get_day_number_from_date(
-                self.base_wpr_info.workshift_person_range,
-                prev_aux_date,
-                self.base_wpr_info.workshift_len,
-            )
+    def get_entrance_day_number(self):
+        if (
+            self.aux_entrance_day_number is None
+            or self.aux_date != self.aux_entrance_day_number_date
+        ):
             aux_entrance_day_number = Utils.get_day_number_from_date(
                 self.entrance_wpr_info.workshift_person_range,
                 self.aux_date,
                 self.entrance_wpr_info.workshift_len,
             )
+            self.aux_entrance_day_number = aux_entrance_day_number
+            self.aux_entrance_day_number_date = self.aux_date
+        return self.aux_entrance_day_number
+
+    def check_prev_schedule(self):
+        prev_aux_date = self.aux_date - timedelta(days=1)
+        (
+            prev_base_schedule,
+            prev_base_schedule_is_nightly,
+            aux_base_day_number,
+        ) = Utils.get_day_schedule(self.base_wpr_info, prev_aux_date)
+
+        if prev_base_schedule and prev_base_schedule_is_nightly:
+            aux_entrance_day_number = self.get_entrance_day_number()
 
             self.process_traverse(aux_base_day_number, aux_entrance_day_number)
             self.collisions_results.add_comparision()
@@ -93,25 +101,14 @@ class CollisionChecker:
                     aux_entrance_day_number, aux_base_day_number, "prev"
                 )
 
-        return aux_collision_detail
-
     def check_current_schedule(self):
-        aux_collision_detail = {}
-        current_base_schedule, _ = Utils.get_day_schedule(
+        current_base_schedule, _, aux_base_day_number = Utils.get_day_schedule(
             self.base_wpr_info, self.aux_date
         )
 
         if self.current_entrance_schedule:
-            aux_base_day_number = Utils.get_day_number_from_date(
-                self.base_wpr_info.workshift_person_range,
-                self.aux_date,
-                self.base_wpr_info.workshift_len,
-            )
-            aux_entrance_day_number = Utils.get_day_number_from_date(
-                self.entrance_wpr_info.workshift_person_range,
-                self.aux_date,
-                self.entrance_wpr_info.workshift_len,
-            )
+
+            aux_entrance_day_number = self.get_entrance_day_number()
 
             self.process_traverse(aux_base_day_number, aux_entrance_day_number)
             self.collisions_results.add_comparision()
@@ -129,12 +126,10 @@ class CollisionChecker:
                 self.collisions_results.update_collisions_detail(
                     aux_entrance_day_number, aux_base_day_number, "current"
                 )
-            return aux_collision_detail
 
     def check_next_schedule(self):
-        aux_collision_detail = {}
         next_aux_date = self.aux_date + timedelta(days=1)
-        next_base_schedule, _ = Utils.get_day_schedule(
+        next_base_schedule, _, aux_base_day_number = Utils.get_day_schedule(
             self.base_wpr_info, next_aux_date
         )
 
@@ -146,16 +141,7 @@ class CollisionChecker:
             ):
                 self.collisions_results.add_collision()
 
-                aux_base_day_number = Utils.get_day_number_from_date(
-                    self.base_wpr_info.workshift_person_range,
-                    next_aux_date,
-                    self.base_wpr_info.workshift_len,
-                )
-                aux_entrance_day_number = Utils.get_day_number_from_date(
-                    self.entrance_wpr_info.workshift_person_range,
-                    self.aux_date,
-                    self.entrance_wpr_info.workshift_len,
-                )
+                aux_entrance_day_number = self.get_entrance_day_number()
 
                 self.collisions_results.append_collision_schedule(
                     self.current_entrance_schedule,
@@ -166,15 +152,9 @@ class CollisionChecker:
                     aux_entrance_day_number, aux_base_day_number, "next"
                 )
 
-        return aux_collision_detail
-
     def update_collisions_detail(self, collision_detail):
         if collision_detail:
-            aux_entrance_day_number = Utils.get_day_number_from_date(
-                self.entrance_wpr_info.workshift_person_range,
-                self.aux_date,
-                self.entrance_wpr_info.workshift_len,
-            )
+            aux_entrance_day_number = self.get_entrance_day_number()
 
             self.collisions_results.update_collisions_detail(
                 day_number=aux_entrance_day_number, collision_detail=collision_detail
@@ -185,11 +165,10 @@ class CollisionChecker:
         self.aux_date = max_start_date
 
         while self.aux_date <= min_end_date:
-            collision_detail = {}
-
             (
                 self.current_entrance_schedule,
                 self.current_entrance_schedule_is_nightly,
+                _,
             ) = Utils.get_day_schedule(self.entrance_wpr_info, self.aux_date)
 
             if self.current_entrance_schedule:

@@ -26,6 +26,7 @@ def collision_checker(data: Data):
     total_collisions = 0
     total_comparisions = 0
     total_collisions_detail = {}
+    total_schedules_detail = {}
 
     for i in range(0, 3000):
         for employee_info in employees_info:
@@ -66,6 +67,7 @@ def collision_checker(data: Data):
                     total_collisions_detail[key] = collisions_result.collisions_detail
                     total_collisions += collisions_result.collisions
                     total_comparisions += collisions_result.comparisions
+                    total_schedules_detail[key] = collisions_result.collision_schedules
 
     end = time.time()
 
@@ -75,4 +77,5 @@ def collision_checker(data: Data):
         "employees_info": len(employees_info),
         "comparisions": total_comparisions,
         "total_collisions_detail": total_collisions_detail,
+        "total_schedules_detail": total_schedules_detail,
     }
