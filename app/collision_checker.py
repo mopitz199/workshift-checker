@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from app.data_classes import CollisionsResults
+from app.collision_result import CollisionsResults
 from app.utils import Utils
 
-smart_collisions = True
+smart_collisions = False
 
 
 class CollisionChecker:
@@ -97,7 +97,9 @@ class CollisionChecker:
                     prev_base_schedule,
                 )
 
-                self.collisions_results.update_collisions_detail(
+                self.collisions_results.append_base_date(prev_base_schedule)
+
+                self.collisions_results.update_day_number_collisions(
                     aux_entrance_day_number, aux_base_day_number, "prev"
                 )
 
@@ -123,7 +125,9 @@ class CollisionChecker:
                     current_base_schedule,
                 )
 
-                self.collisions_results.update_collisions_detail(
+                self.collisions_results.append_base_date(current_base_schedule)
+
+                self.collisions_results.update_day_number_collisions(
                     aux_entrance_day_number, aux_base_day_number, "current"
                 )
 
@@ -148,7 +152,9 @@ class CollisionChecker:
                     next_base_schedule,
                 )
 
-                self.collisions_results.update_collisions_detail(
+                self.collisions_results.append_base_date(next_base_schedule)
+
+                self.collisions_results.update_day_number_collisions(
                     aux_entrance_day_number, aux_base_day_number, "next"
                 )
 
@@ -156,7 +162,7 @@ class CollisionChecker:
         if collision_detail:
             aux_entrance_day_number = self.get_entrance_day_number()
 
-            self.collisions_results.update_collisions_detail(
+            self.collisions_results.update_day_number_collisions(
                 day_number=aux_entrance_day_number, collision_detail=collision_detail
             )
 
@@ -186,5 +192,12 @@ class CollisionChecker:
                     return self.collisions_results
 
                 self.aux_date += timedelta(days=1)
+
+        self.collisions_results.join_base_dates()
+
+        self.collisions_results.get_new_base_ranges(
+            Utils.str_to_date(self.base_wpr_info.workshift_person_range["start_date"]),
+            Utils.str_to_date(self.base_wpr_info.workshift_person_range["end_date"]),
+        )
 
         return self.collisions_results

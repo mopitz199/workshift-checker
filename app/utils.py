@@ -57,7 +57,7 @@ class Utils:
         )
 
         if day_number:
-            day_schedule = wpr_info.workshift[str(day_number)]
+            day_schedule = wpr_info.workshift["days"][str(day_number)]
             if day_schedule:
                 start_datetime = cls.str_to_datetime(
                     str(date_obj), day_schedule["start_time"]
