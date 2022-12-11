@@ -23,9 +23,8 @@ class CollisionChecker:
         # The collision result class were all the result will be saved
         self.collisions_results = CollisionsResults()
 
-        # The information about the aux entrance data
         self.aux_entrance_day_number = None
-        self.aux_entrance_day_number_date = None
+        self.aux_entrance_date = None
 
         self.current_entrance_schedule = None
         self.current_entrance_schedule_is_nightly = None
@@ -68,7 +67,7 @@ class CollisionChecker:
     def get_entrance_day_number(self):
         if (
             self.aux_entrance_day_number is None
-            or self.aux_date != self.aux_entrance_day_number_date
+            or self.aux_date != self.aux_entrance_date
         ):
             aux_entrance_day_number = Utils.get_day_number_from_date(
                 self.entrance_wpr_info.workshift_person_range,
@@ -76,7 +75,7 @@ class CollisionChecker:
                 self.entrance_wpr_info.workshift_len,
             )
             self.aux_entrance_day_number = aux_entrance_day_number
-            self.aux_entrance_day_number_date = self.aux_date
+            self.aux_entrance_date = self.aux_date
         return self.aux_entrance_day_number
 
     def check_prev_schedule(self):
