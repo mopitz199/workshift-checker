@@ -36,7 +36,7 @@ class CollisionsResults:
 
         """The new ranges that should be created(and remove the base range) in order
         to does not have collisions with the entrance range"""
-        self.new_base_ranges = []
+        self.new_base_ranges: list[Range] = []
 
     def append_collision_schedule(
         self,
@@ -108,6 +108,9 @@ class CollisionsResults:
         base_day_number,
         collision_type,
     ):
+        entrance_day_number = str(entrance_day_number)
+        base_day_number = str(base_day_number)
+
         if entrance_day_number not in self.day_number_collisions:
             self.day_number_collisions[entrance_day_number] = {}
 

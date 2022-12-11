@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from app.collision_result import CollisionsResults
+from app.data_classes import WorkShiftPersonRangeInfo
 from app.utils import Utils
 
 smart_collisions = False
@@ -9,17 +10,23 @@ smart_collisions = False
 class CollisionChecker:
     def __init__(
         self,
-        base_workshift_person_range_info,
-        entrance_workshift_person_range_info,
-        detail_level,
+        base_workshift_person_range_info: WorkShiftPersonRangeInfo,
+        entrance_workshift_person_range_info: WorkShiftPersonRangeInfo,
+        detail_level: str,
     ) -> None:
+        # The detail that we want the collision results
         self.detail_level = detail_level
+
+        # If all the possible collision combination were checked
         self.all_traversed = False
 
         self.base_wpr_info = base_workshift_person_range_info
         self.entrance_wpr_info = entrance_workshift_person_range_info
+
+        # The collision result class were all the result will be saved
         self.collisions_results = CollisionsResults()
 
+        # The information about the aux entrance data
         self.aux_entrance_day_number = None
         self.aux_entrance_day_number_date = None
 
@@ -47,7 +54,7 @@ class CollisionChecker:
 
         return max_start_date, min_end_date
 
-    def process_traverse(self, aux_base_day_number, aux_entrance_day_number):
+    def process_traverse(self, aux_base_day_number: int, aux_entrance_day_number: int):
         if (
             not self.base_wpr_info.initial_day_number
             or not self.entrance_wpr_info.initial_day_number
@@ -157,14 +164,6 @@ class CollisionChecker:
                 self.collisions_results.update_day_number_collisions(
                     aux_entrance_day_number, aux_base_day_number, "next"
                 )
-
-    def update_collisions_detail(self, collision_detail):
-        if collision_detail:
-            aux_entrance_day_number = self.get_entrance_day_number()
-
-            self.collisions_results.update_day_number_collisions(
-                day_number=aux_entrance_day_number, collision_detail=collision_detail
-            )
 
     def get_collisions(self):
         max_start_date, min_end_date = self.get_initial_range()

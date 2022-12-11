@@ -1,14 +1,25 @@
 import uuid as uuid_library
 
+from app.collision_result import CollisionsResults
+from app.data_classes import Range, WorkShiftPersonRangeInfo
+
 
 class GlobalCollisionResult:
     def __init__(self) -> None:
+
+        """The hashmap with all the CollisionsResults of each pair with a unique collision"""
         self.global_collision_hash_map = {}
+
+        """The dict that will have all the workshift person range(by their uuid)
+        that should be deleted with the list of new workshift person range that should
+        be created in order to have no collisions with the entrance workshift person range"""
         self.total_new_workshift_person_ranges = {}
 
     def get_key(
-        self, base_workshift_person_range_info, entrance_workshift_person_range_info
-    ):
+        self,
+        base_workshift_person_range_info: WorkShiftPersonRangeInfo,
+        entrance_workshift_person_range_info: WorkShiftPersonRangeInfo,
+    ) -> str:
         base_workshift_uuid = base_workshift_person_range_info.workshift["uuid"]
         base_start_date = base_workshift_person_range_info.workshift_person_range[
             "start_date"
@@ -38,8 +49,10 @@ class GlobalCollisionResult:
         return key
 
     def has_key(
-        self, base_workshift_person_range_info, entrance_workshift_person_range_info
-    ):
+        self,
+        base_workshift_person_range_info: WorkShiftPersonRangeInfo,
+        entrance_workshift_person_range_info: WorkShiftPersonRangeInfo,
+    ) -> bool:
         key = self.get_key(
             base_workshift_person_range_info, entrance_workshift_person_range_info
         )
@@ -50,9 +63,9 @@ class GlobalCollisionResult:
 
     def build_new_workshift_person_ranges(
         self,
-        new_base_ranges,
-        base_workshift_person_range_info,
-    ):
+        new_base_ranges: list,
+        base_workshift_person_range_info: WorkShiftPersonRangeInfo,
+    ) -> None:
         new_workshift_person_ranges = []
         for date_range in new_base_ranges:
             wpr = {
@@ -71,10 +84,10 @@ class GlobalCollisionResult:
 
     def add_result(
         self,
-        base_workshift_person_range_info,
-        entrance_workshift_person_range_info,
-        result,
-    ):
+        base_workshift_person_range_info: WorkShiftPersonRangeInfo,
+        entrance_workshift_person_range_info: WorkShiftPersonRangeInfo,
+        result: CollisionsResults,
+    ) -> None:
         key = self.get_key(
             base_workshift_person_range_info, entrance_workshift_person_range_info
         )
