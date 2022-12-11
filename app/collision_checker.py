@@ -12,10 +12,7 @@ class CollisionChecker:
         self,
         base_workshift_person_range_info: WorkShiftPersonRangeInfo,
         entrance_workshift_person_range_info: WorkShiftPersonRangeInfo,
-        detail_level: str,
     ) -> None:
-        # The detail that we want the collision results
-        self.detail_level = detail_level
 
         # If all the possible collision combination were checked
         self.all_traversed = False
