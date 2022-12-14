@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 @dataclass
@@ -14,3 +14,26 @@ class WorkShiftPersonRangeInfo:
 class Range:
     start_date: datetime.date
     end_date: datetime.date
+
+    def collisioned(self, date_range):
+        return (
+            self.end_date >= date_range.start_date
+            or self.start_date <= date_range.end_date
+        )
+
+    def is_next_to_right(self, date_range):
+        if not self.collisioned(date_range=date_range):
+            return self.end_date + timedelta(days=1) == date_range.start_date
+        else:
+            return False
+
+    def is_next_to_left(self, date_range):
+        if not self.collisioned(date_range=date_range):
+            return self.start_date - timedelta(days=1) == date_range.end_date
+        else:
+            return False
+
+    def extract(self, start_date, end_date):
+        extracted_start_date = max(start_date, self.start_date)
+        extracted_end_date = min(end_date, self.end_date)
+        return Range(extracted_start_date, extracted_end_date)

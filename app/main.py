@@ -41,9 +41,9 @@ def collision_checker(data: Data):
             for entrance_workshift_person_range in entrance_workshifts_person_range:
                 for base_workshift_person_range in base_workshifts_person_range:
 
-                    base_workshift_id = str(base_workshift_person_range["workshift"])
+                    base_workshift_id = str(base_workshift_person_range["workshift_id"])
                     entrance_workshift_id = str(
-                        entrance_workshift_person_range["workshift"]
+                        entrance_workshift_person_range["workshift_id"]
                     )
 
                     base_workshift_person_range_info = WorkShiftPersonRangeInfo(

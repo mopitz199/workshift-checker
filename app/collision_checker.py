@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from app.collision_result import CollisionsResults
-from app.data_classes import WorkShiftPersonRangeInfo
+from app.data_classes import Range, WorkShiftPersonRangeInfo
 from app.utils import Utils
 
 smart_collisions = False
@@ -45,10 +45,26 @@ class CollisionChecker:
             self.entrance_wpr_info.workshift_person_range["end_date"]
         )
 
-        max_start_date = max(base_start_date, entrance_start_date)
-        min_end_date = min(base_end_date, entrance_end_date)
+        base_range = Range(base_start_date, base_end_date)
+        entrance_range = Range(entrance_start_date, entrance_end_date)
 
-        return max_start_date, min_end_date
+        if base_range.collisioned(entrance_range):
+            max_start_date = max(base_start_date, entrance_start_date) - timedelta(
+                days=1
+            )
+            min_end_date = min(base_end_date, entrance_end_date) + timedelta(days=1)
+        elif base_range.is_next_to_right(entrance_range):
+            max_start_date = entrance_range.start_date
+            min_end_date = entrance_range.start_date
+        elif base_range.is_next_to_left(entrance_range):
+            max_start_date = entrance_range.end_date
+            min_end_date = entrance_range.end_date
+        else:
+            return None, None
+
+        new_range = entrance_range.extract(max_start_date, min_end_date)
+
+        return new_range.start_date, new_range.end_date
 
     def process_traverse(self, aux_base_day_number: int, aux_entrance_day_number: int):
         if (
@@ -111,7 +127,7 @@ class CollisionChecker:
             self.base_wpr_info, self.aux_date
         )
 
-        if self.current_entrance_schedule:
+        if self.current_entrance_schedule and current_base_schedule:
 
             aux_entrance_day_number = self.get_entrance_day_number()
 
@@ -165,7 +181,7 @@ class CollisionChecker:
         max_start_date, min_end_date = self.get_initial_range()
         self.aux_date = max_start_date
 
-        while self.aux_date <= min_end_date:
+        while max_start_date is not None and self.aux_date <= min_end_date:
             (
                 self.current_entrance_schedule,
                 self.current_entrance_schedule_is_nightly,
