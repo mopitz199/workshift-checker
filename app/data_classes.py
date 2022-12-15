@@ -18,7 +18,7 @@ class Range:
     def collisioned(self, date_range):
         return (
             self.end_date >= date_range.start_date
-            or self.start_date <= date_range.end_date
+            and self.start_date <= date_range.end_date
         )
 
     def is_next_to_right(self, date_range):
