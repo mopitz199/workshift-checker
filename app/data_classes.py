@@ -34,6 +34,10 @@ class Range:
             return False
 
     def extract(self, start_date, end_date):
-        extracted_start_date = max(start_date, self.start_date)
-        extracted_end_date = min(end_date, self.end_date)
-        return Range(extracted_start_date, extracted_end_date)
+        other_range = Range(start_date, end_date)
+        result = None
+        if self.collisioned(other_range):
+            extracted_start_date = max(start_date, self.start_date)
+            extracted_end_date = min(end_date, self.end_date)
+            result = Range(extracted_start_date, extracted_end_date)
+        return result

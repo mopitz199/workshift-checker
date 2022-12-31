@@ -87,3 +87,86 @@ class TestRangeCollisioned:
             datetime.strptime(end_date2, "%Y-%m-%d").date(),
         )
         assert r1.is_next_to_left(r2) is result
+
+    @pytest.mark.parametrize(
+        "start_date,end_date,extract_start_date,extract_end_date,result_start_date,result_end_date",
+        [
+            (
+                "2022-05-10",
+                "2022-05-15",
+                "2022-05-12",
+                "2022-05-14",
+                "2022-05-12",
+                "2022-05-14",
+            ),
+            (
+                "2022-05-10",
+                "2022-05-15",
+                "2022-05-10",
+                "2022-05-15",
+                "2022-05-10",
+                "2022-05-15",
+            ),
+            (
+                "2022-05-10",
+                "2022-05-15",
+                "2022-05-10",
+                "2022-05-10",
+                "2022-05-10",
+                "2022-05-10",
+            ),
+            (
+                "2022-05-10",
+                "2022-05-15",
+                "2022-05-15",
+                "2022-05-15",
+                "2022-05-15",
+                "2022-05-15",
+            ),
+            (
+                "2022-05-10",
+                "2022-05-15",
+                "2022-05-12",
+                "2022-05-18",
+                "2022-05-12",
+                "2022-05-15",
+            ),
+            (
+                "2022-05-10",
+                "2022-05-15",
+                "2022-05-05",
+                "2022-05-12",
+                "2022-05-10",
+                "2022-05-12",
+            ),
+            ("2022-05-10", "2022-05-15", "2022-05-17", "2022-05-20", None, None),
+        ],
+    )
+    def test_extract(
+        self,
+        start_date,
+        end_date,
+        extract_start_date,
+        extract_end_date,
+        result_start_date,
+        result_end_date,
+    ):
+        range = Range(
+            datetime.strptime(start_date, "%Y-%m-%d").date(),
+            datetime.strptime(end_date, "%Y-%m-%d").date(),
+        )
+
+        result = None
+        if result_start_date and result_end_date:
+            result = Range(
+                datetime.strptime(result_start_date, "%Y-%m-%d").date(),
+                datetime.strptime(result_end_date, "%Y-%m-%d").date(),
+            )
+
+        assert (
+            range.extract(
+                datetime.strptime(extract_start_date, "%Y-%m-%d").date(),
+                datetime.strptime(extract_end_date, "%Y-%m-%d").date(),
+            )
+            == result
+        )
